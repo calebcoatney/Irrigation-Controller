@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getRuns } from "../api";
+import { getRuns, deleteRun, deleteAllRuns } from "../api";
 
 function formatDuration(seconds) {
   if (!seconds) return "—";
@@ -14,7 +14,7 @@ function formatDate(iso) {
   });
 }
 
-function RunRow({ run }) {
+function RunRow({ run, onDelete }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <>
@@ -24,10 +24,17 @@ function RunRow({ run }) {
         <td>{formatDuration(run.duration_seconds)}</td>
         <td><span className={`badge trigger-${run.trigger}`}>{run.trigger}</span></td>
         <td><span className={`badge status-${run.status}`}>{run.status}</span></td>
+        <td>
+          <button
+            className="btn-delete-row"
+            title="Delete this run"
+            onClick={(e) => { e.stopPropagation(); onDelete(run.id); }}
+          >×</button>
+        </td>
       </tr>
       {expanded && (
         <tr className="run-detail">
-          <td colSpan={5}>
+          <td colSpan={6}>
             <div className="run-detail-grid">
               <span>ET deficit at trigger:</span><strong>{run.et_deficit_mm.toFixed(2)} mm</strong>
               <span>Precipitation (24h):</span><strong>{run.precipitation_mm.toFixed(2)} mm</strong>
@@ -65,21 +72,39 @@ export default function History() {
     setOffset((o) => o + LIMIT);
   }
 
+  async function handleDeleteRun(id) {
+    await deleteRun(id);
+    setRuns((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  async function handleClearAll() {
+    if (!window.confirm("Delete all run history?")) return;
+    await deleteAllRuns();
+    setRuns([]);
+    setHasMore(false);
+    setOffset(0);
+  }
+
   if (error) return <div className="page"><div className="error-banner">{error}</div></div>;
 
   return (
     <div className="page">
+      {runs.length > 0 && (
+        <div className="history-toolbar">
+          <button className="btn-clear-all" onClick={handleClearAll}>Clear all</button>
+        </div>
+      )}
       {runs.length === 0 ? (
         <p className="empty">No runs recorded yet.</p>
       ) : (
         <table className="run-table">
           <thead>
             <tr>
-              <th>Zone</th><th>Started</th><th>Duration</th><th>Trigger</th><th>Status</th>
+              <th>Zone</th><th>Started</th><th>Duration</th><th>Trigger</th><th>Status</th><th></th>
             </tr>
           </thead>
           <tbody>
-            {runs.map((r) => <RunRow key={r.id} run={r} />)}
+            {runs.map((r) => <RunRow key={r.id} run={r} onDelete={handleDeleteRun} />)}
           </tbody>
         </table>
       )}

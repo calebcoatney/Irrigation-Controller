@@ -20,7 +20,7 @@ export default function Dashboard() {
       }).then((scheds) =>
         setSchedules(Object.fromEntries(scheds.map((s) => [s.zone_id, s])))
       ),
-      getWeatherStatus().then((ws) => setForecast(ws.forecast)),
+      getWeatherStatus().then((ws) => { setForecast(ws.forecast); }),
     ]).catch(() => setError("Cannot reach backend"));
   }, []);
 
@@ -55,7 +55,11 @@ export default function Dashboard() {
   return (
     <div className="page">
       {error && <div className="error-banner">{error}</div>}
-      <WeatherStrip forecast={forecast} />
+      <WeatherStrip
+        forecast={forecast}
+        locationName={zones[0]?.name}
+        hasCoords={zones.length > 0 && (zones[0].lat !== 0 || zones[0].lng !== 0)}
+      />
       <div className="zones">
         {zones.map((zone) => (
           <ZoneCard

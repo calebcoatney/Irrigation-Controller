@@ -28,3 +28,22 @@ def get_run(run_id: int, session: Session = Depends(get_session)) -> RunRecord:
     if not run:
         raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
     return run
+
+
+@router.delete("/api/runs")
+def delete_all_runs(session: Session = Depends(get_session)):
+    runs = session.exec(select(RunRecord)).all()
+    for run in runs:
+        session.delete(run)
+    session.commit()
+    return {"deleted": len(runs)}
+
+
+@router.delete("/api/runs/{run_id}")
+def delete_run(run_id: int, session: Session = Depends(get_session)):
+    run = session.get(RunRecord, run_id)
+    if not run:
+        raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
+    session.delete(run)
+    session.commit()
+    return {"deleted": 1}

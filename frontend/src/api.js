@@ -19,4 +19,6 @@ export const stopZone = (id) => request(`/api/zones/${id}/stop`, { method: "POST
 export const getRuns = (params = {}) =>
   request(`/api/runs?${new URLSearchParams(params)}`);
 export const getRun = (id) => request(`/api/runs/${id}`);
+export const deleteRun = (id) => request(`/api/runs/${id}`, { method: "DELETE" });
+export const deleteAllRuns = () => request("/api/runs", { method: "DELETE" });
 export const getWeatherStatus = () => request("/api/weather/status");

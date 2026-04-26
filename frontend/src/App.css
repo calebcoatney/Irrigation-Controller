@@ -24,7 +24,9 @@ input[type=checkbox] { width: auto; }
 
 /* ── Weather strip ───────────────────────────────── */
 .weather-strip { background: #fff; border: 1px solid #e7e5e4; border-radius: 8px; padding: 0.75rem 1rem; display: flex; gap: 1.5rem; align-items: center; font-size: 0.9rem; color: #57534e; }
+.weather-location { font-weight: 500; color: #1c1917; }
 .weather-note { color: #16a34a; font-weight: 500; }
+.weather-unconfigured { background: #fafaf9; border: 1px solid #e7e5e4; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; color: #a8a29e; }
 
 /* ── Zone cards ──────────────────────────────────── */
 .zones { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
@@ -32,7 +34,10 @@ input[type=checkbox] { width: auto; }
 .zone-card.running { border-color: #86efac; background: #f0fdf4; }
 .zone-card-header { display: flex; justify-content: space-between; align-items: center; }
 .zone-card-header h2 { font-size: 1rem; font-weight: 600; }
-.zone-meta { font-size: 0.82rem; color: #78716c; display: flex; flex-direction: column; gap: 0.2rem; }
+.zone-meta { font-size: 0.82rem; color: #78716c; display: flex; flex-direction: column; gap: 0.3rem; }
+.schedule-status { font-size: 0.82rem; color: #78716c; }
+.schedule-status.schedule-ready { color: #15803d; font-weight: 500; }
+.schedule-status.muted { color: #a8a29e; }
 .badge { font-size: 0.75rem; font-weight: 500; padding: 0.2rem 0.55rem; border-radius: 999px; }
 .badge.open, .badge.status-running { background: #dcfce7; color: #15803d; }
 .badge.closed, .badge.status-completed { background: #f5f5f4; color: #78716c; }
@@ -54,6 +59,10 @@ input[type=checkbox] { width: auto; }
 .schedule-estimate { font-size: 0.82rem; color: #78716c; }
 .toggle { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
 
+/* ── Schedule estimate ───────────────────────────── */
+.schedule-estimate { font-size: 0.82rem; font-weight: 500; color: #15803d; }
+.schedule-estimate:not([data-ready]) { color: #78716c; font-weight: normal; }
+
 /* ── History page ────────────────────────────────── */
 .run-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e7e5e4; }
 .run-table th { text-align: left; padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 600; color: #78716c; border-bottom: 1px solid #e7e5e4; }
@@ -61,6 +70,11 @@ input[type=checkbox] { width: auto; }
 .run-row:hover td { background: #f9f9f8; }
 .run-detail td { background: #fafaf9; padding: 0.75rem 1rem; }
 .run-detail-grid { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1rem; font-size: 0.85rem; color: #57534e; }
+.history-toolbar { display: flex; justify-content: flex-end; }
+.btn-clear-all { background: none; color: #a8a29e; font-size: 0.8rem; padding: 0.3rem 0.6rem; border: 1px solid #e7e5e4; border-radius: 6px; }
+.btn-clear-all:hover { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
+.btn-delete-row { background: none; color: #d4d0cc; font-size: 1rem; line-height: 1; padding: 0.1rem 0.4rem; border-radius: 4px; border: none; }
+.btn-delete-row:hover { color: #dc2626; background: #fef2f2; }
 .load-more { align-self: center; background: #f5f5f4; color: #57534e; padding: 0.5rem 1.5rem; }
 .empty { color: #78716c; font-size: 0.9rem; }
 

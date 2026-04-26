@@ -7,11 +7,26 @@ function SchedulePanel({ zone, initialSchedule }) {
   const [saved, setSaved] = useState(false);
 
   const deficit = zone.et_deficit_mm;
-  const daysToRun = sched.et_threshold_mm > 0 && deficit < sched.et_threshold_mm
-    ? `~${Math.ceil((sched.et_threshold_mm - deficit) / 4)} days at current ET rate`
-    : deficit >= sched.et_threshold_mm
-    ? "Threshold met — will run at " + sched.preferred_time
-    : "—";
+  const threshold = sched.et_threshold_mm;
+  const ratePerMin = zone.application_rate_mm_per_min;
+
+  function estimateDurationMin(d) {
+    if (!ratePerMin || ratePerMin <= 0) return null;
+    const sec = Math.min(Math.ceil((d / ratePerMin) * 60), sched.max_duration_seconds);
+    return Math.ceil(sec / 60);
+  }
+
+  let estimate;
+  if (!sched.enabled) {
+    estimate = "Scheduling disabled";
+  } else if (deficit >= threshold) {
+    const dur = estimateDurationMin(deficit);
+    estimate = dur ? `Ready — will run ~${dur}m at ${sched.preferred_time}` : `Ready — will run at ${sched.preferred_time}`;
+  } else {
+    const needed = (threshold - deficit).toFixed(1);
+    const days = Math.ceil((threshold - deficit) / 4);
+    estimate = `Need ${needed}mm more (~${days} day${days !== 1 ? "s" : ""} at typical ET)`;
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -68,7 +83,7 @@ function SchedulePanel({ zone, initialSchedule }) {
           />
         </label>
       </div>
-      <p className="schedule-estimate">Estimated next run: {daysToRun}</p>
+      <p className="schedule-estimate">{estimate}</p>
       <button onClick={handleSave} disabled={saving}>
         {saving ? "Saving…" : saved ? "Saved" : "Save"}
       </button>
