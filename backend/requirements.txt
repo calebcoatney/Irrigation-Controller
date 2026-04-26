@@ -1,5 +1,7 @@
 fastapi==0.115.12
 uvicorn[standard]==0.34.2
 pyserial==3.5
-pytest==8.3.5
+sqlmodel==0.0.22
+apscheduler[sqlalchemy]==3.10.4
 httpx==0.28.1
+pytest==8.3.5

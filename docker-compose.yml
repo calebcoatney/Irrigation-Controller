@@ -3,12 +3,14 @@ services:
     build: ./backend
     devices:
       - /dev/irrigation_relay:/dev/irrigation_relay
+    volumes:
+      - type: bind
+        source: /srv/irrigation-controller/data
+        target: /data
     restart: unless-stopped
 
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    build: ./frontend
     ports:
       - "80:80"
     depends_on:
