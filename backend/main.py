@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
-from relay import RelayController
+from relay import RelayController, RelayError
 
 app = FastAPI()
 
@@ -21,7 +21,10 @@ def open_valve(valve_id: int, relay: RelayController = Depends(get_relay)):
         raise HTTPException(status_code=422, detail="valve_id must be 1 or 2")
     if not relay.available:
         raise HTTPException(status_code=503, detail="Relay device not found at /dev/irrigation_relay")
-    relay.open_valve(valve_id)
+    try:
+        relay.open_valve(valve_id)
+    except RelayError as e:
+        raise HTTPException(status_code=503, detail=str(e))
     return relay.status
 
 
@@ -31,5 +34,8 @@ def close_valve(valve_id: int, relay: RelayController = Depends(get_relay)):
         raise HTTPException(status_code=422, detail="valve_id must be 1 or 2")
     if not relay.available:
         raise HTTPException(status_code=503, detail="Relay device not found at /dev/irrigation_relay")
-    relay.close_valve(valve_id)
+    try:
+        relay.close_valve(valve_id)
+    except RelayError as e:
+        raise HTTPException(status_code=503, detail=str(e))
     return relay.status

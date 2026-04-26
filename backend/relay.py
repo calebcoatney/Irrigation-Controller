@@ -12,14 +12,21 @@ PORT = "/dev/irrigation_relay"
 BAUD = 9600
 
 
+class RelayError(Exception):
+    pass
+
+
 class RelayController:
     def __init__(self, port: str = PORT):
         self.port = port
         self._state: dict[int, str] = {1: "closed", 2: "closed"}
 
     def _send(self, data: bytes) -> None:
-        with serial.Serial(self.port, BAUD, timeout=1) as ser:
-            ser.write(data)
+        try:
+            with serial.Serial(self.port, BAUD, timeout=1) as ser:
+                ser.write(data)
+        except serial.SerialException as e:
+            raise RelayError(str(e)) from e
 
     def open_valve(self, valve_id: int) -> None:
         self._send(COMMANDS[(valve_id, "open")])
