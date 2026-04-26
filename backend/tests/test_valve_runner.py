@@ -2,13 +2,14 @@ import pytest
 from unittest.mock import MagicMock, patch
 from datetime import datetime
 from sqlmodel import create_engine, Session, SQLModel
+from sqlalchemy.pool import StaticPool
 from models import ZoneConfig, Schedule, RunRecord
 from valve_runner import run_zone, finish_run, stop_zone
 
 
 @pytest.fixture(name="session")
 def session_fixture():
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False})
+    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     SQLModel.metadata.create_all(engine)
     with Session(engine) as s:
         s.add(ZoneConfig(zone_id=1, name="Front Yard", lat=40.0, lng=-105.0, application_rate_mm_per_min=2.0))
@@ -46,7 +47,7 @@ def test_run_zone_schedules_auto_close(session):
 
 
 def test_finish_run_closes_valve_and_marks_completed():
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False})
+    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     SQLModel.metadata.create_all(engine)
     with Session(engine) as s:
         s.add(ZoneConfig(zone_id=1, name="Front Yard", lat=40.0, lng=-105.0))

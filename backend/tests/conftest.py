@@ -1,11 +1,12 @@
 import pytest
 from sqlmodel import create_engine, Session, SQLModel
+from sqlalchemy.pool import StaticPool
 from models import ZoneConfig, Schedule
 
 
 @pytest.fixture(name="engine")
 def engine_fixture():
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False})
+    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     SQLModel.metadata.create_all(engine)
     return engine
 
@@ -18,7 +19,7 @@ def session_fixture(engine):
 
 @pytest.fixture(name="seeded_engine")
 def seeded_engine_fixture():
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False})
+    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
         for zone_id, name in [(1, "Front Yard"), (2, "Back Yard")]:
