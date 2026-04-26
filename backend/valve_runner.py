@@ -1,9 +1,12 @@
+import logging
 from datetime import datetime, timedelta
 from sqlmodel import Session, select
 from models import RunRecord
 
 from deps import get_relay
 from database import engine
+
+logger = logging.getLogger(__name__)
 
 
 def run_zone(
@@ -58,7 +61,7 @@ def stop_zone(zone_id: int, relay, session: Session, scheduler) -> RunRecord | N
     try:
         scheduler.remove_job(f"close_zone_{zone_id}")
     except Exception:
-        pass
+        logger.debug("No scheduled close job found for zone %s (already fired or never started)", zone_id)
     run = session.exec(
         select(RunRecord)
         .where(RunRecord.zone_id == zone_id)

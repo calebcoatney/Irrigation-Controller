@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
@@ -6,6 +7,7 @@ from database import get_session
 from models import ZoneConfig
 from weather import fetch_daily_weather
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -18,6 +20,7 @@ def get_weather_status(session: Session = Depends(get_session)):
             today = date.today()
             forecast = fetch_daily_weather(zones[0].lat, zones[0].lng, today)
         except Exception:
+            logger.warning("Failed to fetch weather forecast for zone %s", zones[0].zone_id, exc_info=True)
             forecast = None
 
     return {
