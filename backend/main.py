@@ -1,13 +1,8 @@
 from fastapi import FastAPI, HTTPException, Depends
 from relay import RelayController, RelayError
+from deps import get_relay
 
 app = FastAPI()
-
-_relay = RelayController()
-
-
-def get_relay() -> RelayController:
-    return _relay
 
 
 @app.get("/api/status")

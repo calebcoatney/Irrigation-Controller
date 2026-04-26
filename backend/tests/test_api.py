@@ -1,7 +1,8 @@
 from unittest.mock import MagicMock, PropertyMock
 import pytest
 from fastapi.testclient import TestClient
-from main import app, get_relay
+from main import app
+from deps import get_relay
 
 
 def make_mock_relay(available: bool = True, state: dict | None = None) -> MagicMock:
