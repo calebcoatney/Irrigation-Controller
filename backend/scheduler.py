@@ -2,8 +2,11 @@ from datetime import datetime, date, timedelta
 from sqlmodel import Session, select
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+import logging
 
 from database import engine
+
+logger = logging.getLogger(__name__)
 from models import ZoneConfig, Schedule
 from et_logic import update_deficit, compute_duration_seconds
 from weather import fetch_daily_weather
@@ -60,7 +63,7 @@ def nightly_et_sync() -> None:
                 zone.last_et_sync_at = datetime.now()
                 session.add(zone)
             except Exception:
-                pass
+                logger.exception("ET sync failed for zone %s", zone.zone_id)
         session.commit()
 
 
