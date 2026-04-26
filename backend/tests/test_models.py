@@ -1,15 +1,7 @@
 import pytest
 from datetime import datetime
-from sqlmodel import create_engine, Session, SQLModel
+from sqlmodel import Session, SQLModel
 from models import ZoneConfig, Schedule, RunRecord
-
-
-@pytest.fixture(name="session")
-def session_fixture():
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False})
-    SQLModel.metadata.create_all(engine)
-    with Session(engine) as s:
-        yield s
 
 
 def test_zone_config_defaults(session):
