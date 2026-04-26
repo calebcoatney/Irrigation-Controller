@@ -40,6 +40,10 @@ Browser → Nginx (port 80)
 
 **Deploy workflow:** `git push` on desktop → `git pull` on server → `docker compose up --build -d`.
 
+**Server filesystem convention:**
+- App lives at `/srv/irrigation-controller/app` (repo cloned here)
+- Persistent data at `/srv/irrigation-controller/data` (used by future scheduler/DB)
+
 ---
 
 ## Project Structure
