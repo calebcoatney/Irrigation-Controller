@@ -15,9 +15,10 @@ def get_runs(
     offset: int = Query(default=0),
     session: Session = Depends(get_session),
 ) -> list[RunRecord]:
-    stmt = select(RunRecord).order_by(RunRecord.started_at.desc()).offset(offset).limit(limit)
+    stmt = select(RunRecord)
     if zone_id is not None:
         stmt = stmt.where(RunRecord.zone_id == zone_id)
+    stmt = stmt.order_by(RunRecord.started_at.desc()).offset(offset).limit(limit)
     return session.exec(stmt).all()
 
 

@@ -8,7 +8,7 @@ from deps import get_relay
 from models import ZoneConfig, Schedule
 from valve_runner import run_zone, stop_zone
 from et_logic import compute_duration_seconds
-from relay import RelayController
+from relay import RelayController, RelayError
 
 router = APIRouter()
 
@@ -78,7 +78,6 @@ def run_now(
     else:
         duration = fallback_duration
     scheduler = _get_scheduler()
-    from relay import RelayError
     try:
         run = run_zone(zone_id, duration, "manual", zone.et_deficit_mm, 0.0, relay, session, scheduler)
     except RelayError as e:
