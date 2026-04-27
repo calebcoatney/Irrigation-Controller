@@ -63,6 +63,14 @@ input[type=checkbox] { width: auto; }
 .schedule-estimate { font-size: 0.82rem; font-weight: 500; color: #15803d; }
 .schedule-estimate:not([data-ready]) { color: #78716c; font-weight: normal; }
 
+/* ── ET explainer ────────────────────────────────── */
+.explainer { background: #fff; border: 1px solid #e7e5e4; border-radius: 12px; overflow: hidden; }
+.explainer-toggle { background: none; color: #78716c; font-size: 0.85rem; padding: 0.85rem 1.1rem; width: 100%; text-align: left; border-radius: 0; }
+.explainer-toggle:hover { background: #fafaf9; color: #1c1917; }
+.explainer-body { padding: 0 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.85rem; color: #57534e; line-height: 1.6; border-top: 1px solid #f5f5f4; }
+.explainer-body p:first-child { margin-top: 0.85rem; }
+.explainer-formula { background: #f5f5f4; border-radius: 6px; padding: 0.6rem 0.85rem; font-size: 0.8rem; color: #1c1917; line-height: 1.7; white-space: pre; }
+
 /* ── History page ────────────────────────────────── */
 .run-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #e7e5e4; }
 .run-table th { text-align: left; padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 600; color: #78716c; border-bottom: 1px solid #e7e5e4; }

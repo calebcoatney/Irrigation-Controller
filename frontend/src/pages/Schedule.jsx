@@ -91,6 +91,38 @@ function SchedulePanel({ zone, initialSchedule }) {
   );
 }
 
+function ETExplainer() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="explainer">
+      <button className="explainer-toggle" onClick={() => setOpen((o) => !o)}>
+        {open ? "▾" : "▸"} How ET scheduling works
+      </button>
+      {open && (
+        <div className="explainer-body">
+          <p>
+            <strong>Evapotranspiration (ET)</strong> is the amount of water plants lose to the atmosphere each day — through evaporation from the soil and transpiration through leaves. It's driven by temperature, humidity, wind, and sunlight.
+          </p>
+          <p>
+            Each night, the controller fetches yesterday's ET and rainfall from Open-Meteo (a free weather API) using your zone's coordinates. It then updates a running <strong>water debt</strong>:
+          </p>
+          <pre className="explainer-formula">debt += (ET × crop coefficient) − rainfall{"\n"}debt = max(debt, 0)   {/* never goes negative */}</pre>
+          <p>
+            The <strong>crop coefficient</strong> adjusts raw ET for your plant type — grass uses about 80% of reference ET, drip-irrigated shrubs about 50%.
+          </p>
+          <p>
+            When the debt reaches your <strong>threshold</strong>, the controller runs the zone long enough to pay it back:
+          </p>
+          <pre className="explainer-formula">run time = debt ÷ application rate{"\n"}         (capped at max duration)</pre>
+          <p>
+            After a run, the debt resets to zero. Rain heavy enough to exceed the day's ET reduces the debt directly, so the system skips watering on rainy days automatically.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Schedule() {
   const [zones, setZones] = useState([]);
   const [schedules, setSchedules] = useState({});
@@ -117,6 +149,7 @@ export default function Schedule() {
           ) : null
         )}
       </div>
+      <ETExplainer />
     </div>
   );
 }
