@@ -85,3 +85,14 @@ input[type=checkbox] { width: auto; }
 .settings-fields { display: flex; flex-direction: column; gap: 0.75rem; }
 .settings-fields label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; color: #57534e; }
 .field-hint { font-size: 0.75rem; color: #a8a29e; line-height: 1.4; }
+.btn-drip-calc { background: none; color: #78716c; font-size: 0.8rem; padding: 0.25rem 0; border: none; text-decoration: underline; text-underline-offset: 2px; }
+.btn-drip-calc:hover { color: #1c1917; }
+.drip-calc { background: #fafaf9; border: 1px solid #e7e5e4; border-radius: 8px; padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.drip-calc-title { font-size: 0.8rem; font-weight: 600; color: #57534e; }
+.drip-calc-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+.drip-calc-fields label { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.78rem; color: #57534e; }
+.drip-calc-result { display: flex; align-items: center; justify-content: space-between; font-size: 0.88rem; color: #57534e; }
+.drip-calc-actions { display: flex; gap: 0.5rem; }
+.btn-apply { background: #16a34a; color: #fff; font-size: 0.82rem; padding: 0.35rem 0.75rem; }
+.btn-apply:hover { opacity: 0.85; }
+.btn-cancel { background: none; color: #78716c; font-size: 0.82rem; padding: 0.35rem 0.75rem; border: 1px solid #e7e5e4; }
