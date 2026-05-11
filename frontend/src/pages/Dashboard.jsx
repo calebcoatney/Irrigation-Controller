@@ -24,12 +24,17 @@ export default function Dashboard() {
     ]).catch(() => setError("Cannot reach backend"));
   }, []);
 
+  async function refreshZonesAndStatus() {
+    const [s, zs] = await Promise.all([getStatus(), getZones()]);
+    setStatus(s);
+    setZones(zs);
+  }
+
   async function handleRunNow(id) {
     setLoading((l) => ({ ...l, [id]: true }));
     try {
       await runNow(id);
-      const s = await getStatus();
-      setStatus(s);
+      await refreshZonesAndStatus();
       setError(null);
     } catch (e) {
       setError(e.message);
@@ -42,8 +47,7 @@ export default function Dashboard() {
     setLoading((l) => ({ ...l, [id]: true }));
     try {
       await stopZone(id);
-      const s = await getStatus();
-      setStatus(s);
+      await refreshZonesAndStatus();
       setError(null);
     } catch (e) {
       setError(e.message);

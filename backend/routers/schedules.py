@@ -78,10 +78,19 @@ def run_now(
     else:
         duration = fallback_duration
     scheduler = _get_scheduler()
+    ran_from_deficit = sched and zone.et_deficit_mm >= sched.et_threshold_mm
     try:
         run = run_zone(zone_id, duration, "manual", zone.et_deficit_mm, 0.0, relay, session, scheduler)
     except RelayError as e:
         raise HTTPException(status_code=503, detail=str(e))
+    if ran_from_deficit:
+        zone.et_deficit_mm = 0.0
+    else:
+        applied_mm = (duration / 60) * zone.application_rate_mm_per_min
+        zone.et_deficit_mm = max(0.0, zone.et_deficit_mm - applied_mm)
+    session.add(zone)
+    session.commit()
+    session.refresh(run)
     return run
 
 
