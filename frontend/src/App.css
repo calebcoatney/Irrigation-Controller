@@ -104,3 +104,13 @@ input[type=checkbox] { width: auto; }
 .btn-apply { background: #16a34a; color: #fff; font-size: 0.82rem; padding: 0.35rem 0.75rem; }
 .btn-apply:hover { opacity: 0.85; }
 .btn-cancel { background: none; color: #78716c; font-size: 0.82rem; padding: 0.35rem 0.75rem; border: 1px solid #e7e5e4; }
+
+/* ── Modal ──────────────────────────────────────── */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.modal { background: #fff; border-radius: 12px; padding: 1.5rem; max-width: 360px; width: 90%; display: flex; flex-direction: column; gap: 1rem; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+.modal h3 { font-size: 1rem; font-weight: 600; margin: 0; }
+.modal p { font-size: 0.875rem; color: #78716c; margin: 0; }
+.modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+.modal-actions .btn-stop { width: auto; padding: 0.4rem 0.9rem; font-size: 0.875rem; }
+.btn-reset-debt { background: none; color: #a8a29e; font-size: 0.78rem; padding: 0; border: none; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; align-self: flex-start; }
+.btn-reset-debt:hover { color: #dc2626; }
