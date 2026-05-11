@@ -29,6 +29,23 @@ def client_fixture():
     test_app.dependency_overrides.clear()
 
 
+@pytest.fixture(name="client_with_engine")
+def client_with_engine_fixture():
+    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as s:
+        s.add(ZoneConfig(zone_id=1, name="Front Yard", lat=40.0, lng=-105.0, et_deficit_mm=12.5))
+        s.commit()
+
+    def override():
+        with Session(engine) as s:
+            yield s
+
+    test_app.dependency_overrides[get_session] = override
+    yield TestClient(test_app), engine
+    test_app.dependency_overrides.clear()
+
+
 def test_get_zones_returns_both(client):
     resp = client.get("/api/zones")
     assert resp.status_code == 200
@@ -54,4 +71,20 @@ def test_update_zone_config(client):
 
 def test_update_zone_config_invalid_id(client):
     resp = client.put("/api/zones/3/config", json={"name": "Ghost"})
+    assert resp.status_code == 404
+
+
+def test_reset_deficit(client_with_engine):
+    tc, engine = client_with_engine
+    resp = tc.post("/api/zones/1/reset-deficit")
+    assert resp.status_code == 200
+    assert resp.json()["et_deficit_mm"] == pytest.approx(0.0)
+    with Session(engine) as s:
+        zone = s.get(ZoneConfig, 1)
+        assert zone.et_deficit_mm == pytest.approx(0.0)
+
+
+def test_reset_deficit_not_found(client_with_engine):
+    tc, _ = client_with_engine
+    resp = tc.post("/api/zones/99/reset-deficit")
     assert resp.status_code == 404

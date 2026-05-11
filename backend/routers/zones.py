@@ -37,3 +37,18 @@ def update_zone_config(
     session.commit()
     session.refresh(zone)
     return zone
+
+
+@router.post("/api/zones/{zone_id}/reset-deficit")
+def reset_deficit(
+    zone_id: int,
+    session: Session = Depends(get_session),
+) -> ZoneConfig:
+    zone = session.get(ZoneConfig, zone_id)
+    if not zone:
+        raise HTTPException(status_code=404, detail=f"Zone {zone_id} not found")
+    zone.et_deficit_mm = 0.0
+    session.add(zone)
+    session.commit()
+    session.refresh(zone)
+    return zone
