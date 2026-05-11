@@ -16,6 +16,8 @@ export const updateSchedule = (id, body) =>
   request(`/api/zones/${id}/schedule`, { method: "PUT", headers: JSON_HEADERS, body: JSON.stringify(body) });
 export const runNow = (id) => request(`/api/zones/${id}/schedule/run-now`, { method: "POST" });
 export const stopZone = (id) => request(`/api/zones/${id}/stop`, { method: "POST" });
+export const resetDeficit = (id) =>
+  request(`/api/zones/${id}/reset-deficit`, { method: "POST" });
 export const getRuns = (params = {}) =>
   request(`/api/runs?${new URLSearchParams(params)}`);
 export const getRun = (id) => request(`/api/runs/${id}`);
