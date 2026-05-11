@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { getZones, getSchedule, updateSchedule } from "../api";
+import { getZones, getSchedule, updateSchedule, resetDeficit } from "../api";
+import ConfirmModal from "../components/ConfirmModal";
 
-function SchedulePanel({ zone, initialSchedule }) {
+function SchedulePanel({ zone, initialSchedule, onResetDeficit }) {
   const [sched, setSched] = useState(initialSchedule);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   const deficit = zone.et_deficit_mm;
   const threshold = sched.et_threshold_mm;
@@ -38,6 +40,11 @@ function SchedulePanel({ zone, initialSchedule }) {
     } finally {
       setSaving(false);
     }
+  }
+
+  async function handleConfirmReset() {
+    setConfirming(false);
+    await onResetDeficit(zone.zone_id);
   }
 
   return (
@@ -83,10 +90,25 @@ function SchedulePanel({ zone, initialSchedule }) {
           />
         </label>
       </div>
+      <div className="zone-meta">
+        <span>Water debt: <strong>{deficit.toFixed(1)} mm</strong></span>
+        <button className="btn-reset-debt" onClick={() => setConfirming(true)}>
+          Reset water debt
+        </button>
+      </div>
       <p className="schedule-estimate">{estimate}</p>
       <button onClick={handleSave} disabled={saving}>
         {saving ? "Saving…" : saved ? "Saved" : "Save"}
       </button>
+      {confirming && (
+        <ConfirmModal
+          title="Reset water debt"
+          message={`Reset water debt for ${zone.name} to 0 mm?`}
+          confirmLabel="Reset"
+          onConfirm={handleConfirmReset}
+          onCancel={() => setConfirming(false)}
+        />
+      )}
     </div>
   );
 }
@@ -128,15 +150,21 @@ export default function Schedule() {
   const [schedules, setSchedules] = useState({});
   const [error, setError] = useState(null);
 
+  async function loadData() {
+    const zs = await getZones();
+    const scheds = await Promise.all(zs.map((z) => getSchedule(z.zone_id)));
+    setZones(zs);
+    setSchedules(Object.fromEntries(scheds.map((s) => [s.zone_id, s])));
+  }
+
   useEffect(() => {
-    getZones()
-      .then((zs) => {
-        setZones(zs);
-        return Promise.all(zs.map((z) => getSchedule(z.zone_id)));
-      })
-      .then((scheds) => setSchedules(Object.fromEntries(scheds.map((s) => [s.zone_id, s]))))
-      .catch(() => setError("Cannot reach backend"));
+    loadData().catch(() => setError("Cannot reach backend"));
   }, []);
+
+  async function handleResetDeficit(zoneId) {
+    await resetDeficit(zoneId);
+    await loadData();
+  }
 
   if (error) return <div className="page"><div className="error-banner">{error}</div></div>;
 
@@ -145,7 +173,12 @@ export default function Schedule() {
       <div className="schedule-panels">
         {zones.map((z) =>
           schedules[z.zone_id] ? (
-            <SchedulePanel key={z.zone_id} zone={z} initialSchedule={schedules[z.zone_id]} />
+            <SchedulePanel
+              key={z.zone_id}
+              zone={z}
+              initialSchedule={schedules[z.zone_id]}
+              onResetDeficit={handleResetDeficit}
+            />
           ) : null
         )}
       </div>
