@@ -1,7 +1,8 @@
 const JSON_HEADERS = { "Content-Type": "application/json" };
+const BASE = "/irrigation-controller";
 
 async function request(path, options = {}) {
-  const resp = await fetch(path, options);
+  const resp = await fetch(BASE + path, options);
   const data = await resp.json();
   if (!resp.ok) throw Object.assign(new Error(data.detail || "Request failed"), { status: resp.status });
   return data;

@@ -16,7 +16,7 @@ services:
       dockerfile: frontend/Dockerfile
     container_name: irrigation-frontend
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     depends_on:
       - backend
     restart: unless-stopped

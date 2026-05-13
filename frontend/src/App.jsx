@@ -8,7 +8,7 @@ import "./App.css";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/irrigation-controller">
       <div className="app">
         <header className="app-header">
           <h1>Irrigation Controller</h1>
