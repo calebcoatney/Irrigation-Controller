@@ -2,6 +2,8 @@ services:
   backend:
     build: ./backend
     container_name: irrigation-backend
+    environment:
+      - TZ=America/Denver
     devices:
       - /dev/irrigation_relay:/dev/irrigation_relay
     volumes:
